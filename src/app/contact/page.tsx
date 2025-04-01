@@ -30,8 +30,7 @@ export default function Contact() {
           <ContactForm />
           <div className="space-y-4">
             <p className="text-lg text-gray-700">Телефон: +380 994 407 123</p>
-            <p className="text-lg text-gray-700">Email: info@thermo-ceramics.com</p>
-            <p className="text-lg text-gray-700">Адреса: м. Київ, вул. Промислова, 10</p>
+            <p className="text-lg text-gray-700">Email: thermoceramic.work@gmail.com</p>
             <p className="text-lg text-gray-700">
               Ми працюємо з понеділка по п’ятницю з 9:00 до 18:00. Звертайтесь, і ми з радістю відповімо на всі ваші запитання!
             </p>
