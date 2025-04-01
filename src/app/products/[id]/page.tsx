@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { use } from 'react';
+import { useState, useEffect } from 'react';
 import products from '../../../data/products.json';
 import specs from '../../../data/specs.json';
 import SpecsTable from '@/components/SpecsTable';
@@ -11,12 +12,44 @@ interface Product {
   dimensions: string;
   label: string;
   weight: string;
+  priceInEuro: string; // Базова ціна в євро
 }
 
 export default function ProductDetail({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const product = products.find((p) => p.id === parseInt(resolvedParams.id)) as Product | undefined;
   const productSpecs = product ? specs.filter((spec) => spec.label === product.label) : [];
+
+  // Стан для курсу обміну EUR/UAH
+  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Отримання курсу обміну з API
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      try {
+        const response = await fetch(
+          'https://api.exchangeratesapi.io/v1/latest?access_key=YOUR_API_KEY&base=EUR&symbols=UAH'
+        );
+        const data = await response.json();
+
+        if (data.success) {
+          setExchangeRate(data.rates.UAH);
+        } else {
+          // setError('Не вдалося отримати курс обміну. Використовується стандартний курс.');
+          setExchangeRate(45); // Запасний курс, якщо API не працює
+        }
+      } catch (err) {
+        setError('Помилка при отриманні курсу обміну. Використовується стандартний курс.');
+        setExchangeRate(45); // Запасний курс у разі помилки
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExchangeRate();
+  }, []);
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -63,6 +96,10 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
     );
   }
 
+  // Конвертація ціни з EUR у UAH
+  const priceInEuro = parseFloat(product.priceInEuro.replace(' €', '')); // Видаляємо символ € і конвертуємо в число
+  const priceInUAH = exchangeRate ? Math.round(priceInEuro * exchangeRate) : null;
+
   return (
     <div className="bg-gray-50 min-h-screen py-16">
       <div className="container mx-auto px-4">
@@ -83,6 +120,18 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
         >
           Високоякісна вогнетривка плита для вашого проєкту
         </motion.p>
+
+        {/* Повідомлення про помилку або завантаження */}
+        {error && (
+          <motion.p
+            className="text-red-500 text-center mb-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {error}
+          </motion.p>
+        )}
 
         {/* Основна інформація */}
         <motion.div
@@ -108,6 +157,18 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
               <p className="text-lg text-gray-700">Маркування: {product.label}</p>
               <p className="text-lg text-gray-700">Вага: {product.weight}</p>
               <p className="text-lg text-gray-700">Розміри: {product.dimensions} мм</p>
+              {loading ? (
+                <p className="text-lg text-gray-700">Завантаження ціни...</p>
+              ) : (
+                <>
+                  <p className="text-2xl font-bold text-blue-600 mt-4">
+                    Ціна: {priceInUAH ? `${priceInUAH} ₴` : 'Н/Д'}
+                  </p>
+                  {/* <p className="text-lg text-gray-500 mt-1">
+                    ({product.priceInEuro} за курсом {exchangeRate ? exchangeRate.toFixed(2) : 'Н/Д'} UAH/EUR)
+                  </p> */}
+                </>
+              )}
             </div>
             <motion.a
               href="/contact"

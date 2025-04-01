@@ -49,11 +49,11 @@ export default function NavMenu() {
         <motion.a href="/" className="text-gray-700 flex items-center" variants={linkVariants} whileHover="hover">
           <FaHome className="mr-1" /> Головна
         </motion.a>
-        <motion.a href="/about" className="text-gray-700 flex items-center" variants={linkVariants} whileHover="hover">
-          <FaInfoCircle className="mr-1" /> Виробництво
-        </motion.a>
         <motion.a href="/products" className="text-gray-700 flex items-center" variants={linkVariants} whileHover="hover">
           <FaBox className="mr-1" /> Продукція
+        </motion.a>
+        <motion.a href="/about" className="text-gray-700 flex items-center" variants={linkVariants} whileHover="hover">
+          <FaInfoCircle className="mr-1" /> Виробництво
         </motion.a>
         <motion.a href="/applications" className="text-gray-700 flex items-center" variants={linkVariants} whileHover="hover">
           <FaCogs className="mr-1" /> Застосування
@@ -84,15 +84,6 @@ export default function NavMenu() {
             <FaHome className="mr-2" /> Головна
           </motion.a>
           <motion.a
-            href="/about"
-            className="text-gray-700 flex items-center py-2 px-4 w-full text-center"
-            variants={linkVariants}
-            whileHover="hover"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <FaInfoCircle className="mr-2" /> Виробництво
-          </motion.a>
-          <motion.a
             href="/products"
             className="text-gray-700 flex items-center py-2 px-4 w-full text-center"
             variants={linkVariants}
@@ -100,6 +91,15 @@ export default function NavMenu() {
             onClick={() => setIsMenuOpen(false)}
           >
             <FaBox className="mr-2" /> Продукція
+          </motion.a>
+          <motion.a
+            href="/about"
+            className="text-gray-700 flex items-center py-2 px-4 w-full text-center"
+            variants={linkVariants}
+            whileHover="hover"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <FaInfoCircle className="mr-2" /> Виробництво
           </motion.a>
           <motion.a
             href="/applications"

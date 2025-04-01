@@ -29,7 +29,7 @@ export default function Contact() {
         >
           <ContactForm />
           <div className="space-y-4">
-            <p className="text-lg text-gray-700">Телефон: +380 123 456 789</p>
+            <p className="text-lg text-gray-700">Телефон: +380 994 407 123</p>
             <p className="text-lg text-gray-700">Email: info@thermo-ceramics.com</p>
             <p className="text-lg text-gray-700">Адреса: м. Київ, вул. Промислова, 10</p>
             <p className="text-lg text-gray-700">
