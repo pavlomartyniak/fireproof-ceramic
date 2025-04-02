@@ -13,12 +13,14 @@ interface FormData {
 
 export default function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false); // Стан для відстеження успішного надсилання
+  const [isSubmitting, setIsSubmitting] = useState(false); // Стан для відображення "Відправлення..."
+  const [error, setError] = useState<string | null>(null); // Стан для відображення помилок
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset, // Додаємо reset для очищення форми
+    reset,
   } = useForm<FormData>({
     defaultValues: {
       name: '',
@@ -32,16 +34,48 @@ export default function ContactForm() {
     hover: { scale: 1.05, transition: { duration: 0.3 } },
   };
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log('Форма відправлена:', data);
-    // Тут можна додати логіку для відправлення даних на сервер, наприклад, через fetch або axios
-    setIsSubmitted(true); // Змінюємо стан після успішного надсилання
+  const formEndpoint = `https://formspree.io/f/${process.env.NEXT_PUBLIC_FORMSPREE_ID}`;
+
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch(formEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          message: data.message,
+          _subject: 'Нове повідомлення з Termokeramika', // Тема листа
+          _replyto: data.email || 'no-reply@termokeramika.com.ua', // Email для відповіді
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Помилка при відправленні форми. Спробуйте ще раз.');
+      }
+
+      setIsSubmitted(true); // Показуємо повідомлення про успіх
+      reset(); // Очищаємо форму
+    } catch (err: any) {
+      setError(err.message || 'Щось пішло не так. Спробуйте ще раз.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Функція для повернення до форми
   const handleSendAnother = () => {
-    setIsSubmitted(false); // Повертаємо форму
-    reset(); // Очищаємо поля форми
+    setIsSubmitted(false);
+    setError(null);
+    reset();
   };
 
   // Якщо форма успішно надіслана, показуємо повідомлення
@@ -59,14 +93,23 @@ export default function ContactForm() {
         <p className="text-lg text-gray-600 mb-6">
           Скоро з вами зв’яжеться менеджер.
         </p>
-        <a href="/products"><motion.button
+        <motion.button
           onClick={handleSendAnother}
-          className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md"
+          className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md mr-4"
           variants={buttonVariants}
           whileHover="hover"
         >
-          До пошуку продуктів!
-        </motion.button></a>
+          Надіслати ще одне повідомлення
+        </motion.button>
+        <a href="/products">
+          <motion.button
+            className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md"
+            variants={buttonVariants}
+            whileHover="hover"
+          >
+            До пошуку продуктів!
+          </motion.button>
+        </a>
       </motion.div>
     );
   }
@@ -77,6 +120,18 @@ export default function ContactForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-6 bg-white p-8 rounded-lg shadow-md"
     >
+      {/* Повідомлення про помилку */}
+      {error && (
+        <motion.p
+          className="text-red-500 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {error}
+        </motion.p>
+      )}
+
       {/* Поле "Ім’я" */}
       <div>
         <label className="block text-lg text-gray-700">Ім’я</label>
@@ -109,7 +164,7 @@ export default function ContactForm() {
           {...register('phone', {
             required: "Номер телефону є обов’язковим",
             pattern: {
-              value: /^\+?[0-9]{12,15}$/,
+              value: /^\+?[0-9]{10,15}$/,
               message: 'Введіть коректний номер телефону (наприклад, +380123456789)',
             },
           })}
@@ -159,11 +214,14 @@ export default function ContactForm() {
       {/* Кнопка відправлення */}
       <motion.button
         type="submit"
-        className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md"
+        className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-md ${
+          isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
         variants={buttonVariants}
-        whileHover="hover"
+        whileHover={isSubmitting ? {} : 'hover'}
+        disabled={isSubmitting}
       >
-        Надіслати
+        {isSubmitting ? 'Відправлення...' : 'Надіслати'}
       </motion.button>
     </form>
   );

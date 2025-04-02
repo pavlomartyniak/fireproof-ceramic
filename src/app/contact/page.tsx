@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import ContactForm from '../../components/ContactForm';
+import Head from 'next/head';
 
 export default function Contact() {
   const sectionVariants = {
@@ -11,6 +12,18 @@ export default function Contact() {
 
   return (
     <div className="bg-gray-50 min-h-screen py-16">
+      <Head>
+        <title>Контакти - Termokeramika | Зв’яжіться з нами</title>
+        <meta
+          name="description"
+          content="Зв’яжіться з Termokeramika для консультації або замовлення шамотних плит. Заповніть форму, і наш менеджер зв’яжеться з вами!"
+        />
+        <meta
+          name="keywords"
+          content="шамотна плита, вогнетривка плита, термокераміка, termokeramika, контакти"
+        />
+        <meta name="robots" content="index, follow" />
+      </Head>
       <div className="container mx-auto px-4">
         <motion.h1
           className="text-4xl md:text-5xl font-bold text-gray-900 text-center mb-12"

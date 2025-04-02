@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import HeroSection from '../components/HeroSection';
 import ProductGrid from '../components/ProductGrid';
 import { FaFire, FaLeaf, FaCogs } from 'react-icons/fa';
+import Head from 'next/head';
 
 export default function Home() {
   const sectionVariants = {
@@ -12,6 +13,18 @@ export default function Home() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      <Head>
+        <title>Termokeramika | Шамотні плити та вогнетривкі матеріали</title>
+        <meta
+          name="description"
+          content="Termokeramika – провідний виробник шамотних плит та вогнетривких матеріалів в Україні. Надійні рішення для печей, камінів та промислових установок."
+        />
+        <meta
+          name="keywords"
+          content="шамотна плита, вогнетривка плита, термокераміка, termokeramika, вогнетривкі матеріали"
+        />
+        <meta name="robots" content="index, follow" />
+      </Head>
       {/* Героїчний блок */}
       <HeroSection
         title="Термо Кераміка – Надійність у кожній плиті"

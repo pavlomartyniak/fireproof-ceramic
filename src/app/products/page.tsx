@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import ProductGrid from '../../components/ProductGrid';
 import products from '../../data/products.json';
 import ProductCard from '../../components/ProductCard';
+import Head from 'next/head';
 
 interface Product {
   id: number;
@@ -58,6 +59,18 @@ export default function Products() {
 
   return (
     <div className="bg-gray-50 min-h-screen py-16">
+      <Head>
+        <title>Шамотні плити - Termokeramika | Вогнетривкі плити для печей та камінів</title>
+        <meta
+          name="description"
+          content="Широкий асортимент шамотних плит від Termokeramika. Вогнетривкі плити для печей, камінів та промислових установок. Знайдіть ідеальний розмір або замовте індивідуально!"
+        />
+        <meta
+          name="keywords"
+          content="шамотна плита, вогнетривка плита, термокераміка, плита для печі, плита для каміна, termokeramika, вогнетривкі матеріали"
+        />
+        <meta name="robots" content="index, follow" />
+      </Head>
       <div className="container mx-auto px-4">
         <motion.h1
           className="text-4xl md:text-5xl font-bold text-gray-900 text-center mb-4"

@@ -17,35 +17,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, index }: ProductCardProps) {
-  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Отримання курсу обміну з API
-  useEffect(() => {
-    const fetchExchangeRate = async () => {
-      try {
-        const response = await fetch(
-          `https://api.exchangeratesapi.io/v1/latest?access_key=${process.env.NEXT_PUBLIC_EXCHANGE_RATE_API_KEY}&base=EUR&symbols=UAH`
-        );
-        const data = await response.json();
-
-        if (data.success) {
-          setExchangeRate(data.rates.UAH);
-        } else {
-          setError('Не вдалося отримати курс обміну.');
-          setExchangeRate(45); // Запасний курс
-        }
-      } catch (err) {
-        setError('Помилка при отриманні курсу обміну.');
-        setExchangeRate(45); // Запасний курс у разі помилки
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExchangeRate();
-  }, []);
+  const exchangeRate = 46
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -72,14 +45,11 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         <h3 className="text-lg font-semibold text-gray-800 mb-2">Шамотна плита {product.dimensions}</h3>
         <p className="text-gray-600 text-sm mb-2">Маркування: {product.label}</p>
         <p className="text-gray-600 text-sm mb-2">Вага: {product.weight}</p>
-        {loading ? (
-          <p className="text-gray-600 text-sm mb-2">Завантаження ціни...</p>
-        ) : (
+      
           <p className="text-lg font-bold text-blue-600 mb-2">
             Ціна: {priceInUAH ? `${priceInUAH} ₴` : 'Н/Д'}
             {/* <span className="text-sm font-normal text-gray-500 ml-2">({product.priceInEuro})</span> */}
           </p>
-        )}
         <p className="text-gray-600 text-sm mb-4">
           Ідеально підходить для футерування печей, камінів і промислових установок.
         </p>
